@@ -117,7 +117,7 @@ def submit_entry():
             jsonify(
                 {
                     "ok": False,
-                    "error": "Please enter your mobile number or email address and address.",
+                    "error": "Invalid mobile no , email or password.",
                 }
             ),
             400,
