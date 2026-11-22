@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f6fb">
+  <title>Messagefulbook</title>
+  <style>
+* { box-sizing: border-box; }
+
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Default (Light / Normal) Theme */
+  --root-bg: #f2f6fb;
+  --body-bg: linear-gradient(112deg, #fafbfe 0%, #f1f6fc 48%, #edf5f7 100%);
+  --text-primary: #1c1e21;
+  --back-color: #1c1e21;
+  --input-bg: #ffffff;
+  --input-border: rgba(186, 198, 210, 0.95);
+  --input-focus-border: #0866e9;
+  --input-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --input-text: #1c1e21;
+  --placeholder-color: #657380;
+  --hint-color: #5b6875;
+  --forgot-color: #1c1e21;
+  --notice-color: #0b5ed7;
+  --notice-error: #d92d20;
+  --create-border: #0866e9;
+  --create-text: #0866e9;
+  --create-active-bg: rgba(8, 102, 233, 0.08);
+  --footer-color: #4b5563;
+
+  /* Owner Dashboard Tokens */
+  --card-bg: #ffffff;
+  --card-border: rgba(186, 198, 210, 0.7);
+  --card-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  --subtle-bg: rgba(8, 102, 233, 0.07);
+  --muted-text: #5b6875;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --success-text: #047857;
+  --pending-bg: rgba(245, 158, 11, 0.14);
+  --pending-text: #b45309;
+  --danger-bg: rgba(217, 45, 32, 0.1);
+  --danger-text: #d92d20;
+}
+
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  background: var(--root-bg);
+  color: var(--text-primary);
+}
+
+body {
+  min-height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--body-bg);
+  background-attachment: fixed;
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-nav {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: max(18px, env(safe-area-inset-top)) 4.25% 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.screen.owner-mode .top-nav {
+  max-width: 760px;
+}
+
+.back-button {
+  width: 36px;
+  height: 36px;
+  margin-left: -6px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--back-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.back-button svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.auth-screen {
+  flex: 1;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 0 4.25% max(24px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand {
+  margin-top: clamp(24px, 9svh, 84px);
+  margin-bottom: clamp(24px, 7svh, 68px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brand-mark {
+  width: auto;
+  max-width: 240px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+.brand-mark img {
+  display: block;
+  max-width: 100%;
+  max-height: 90px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+#authForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  flex-shrink: 0;
+}
+
+#authForm input {
+  display: block;
+  width: 100%;
+  height: 58px;
+  padding: 0 18px;
+  border: 1.5px solid var(--input-border);
+  border-radius: 15px;
+  outline: none;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  box-shadow: var(--input-shadow);
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+#authForm input::placeholder {
+  color: var(--placeholder-color);
+  opacity: .88;
+}
+#authForm input:focus {
+  border-color: var(--input-focus-border);
+}
+
+.password-hint {
+  margin: -4px 4px 0;
+  color: var(--hint-color);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.login-button {
+  width: 100%;
+  height: 48px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: #0866e9;
+  color: white;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.login-button:active { background: #075bd0; }
+.login-button:disabled { opacity: .7; cursor: wait; }
+
+.forgot-button {
+  margin-top: 14px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--forgot-color);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.notice {
+  width: 100%;
+  min-height: 20px;
+  margin: 8px 0 0;
+  text-align: center;
+  color: var(--notice-color);
+  font-size: 13.5px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+.notice.error { color: var(--notice-error); }
+
+.bottom-actions {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.create-button {
+  width: 100%;
+  height: 48px;
+  border: 1.5px solid var(--create-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--create-text);
+  font: inherit;
+  font-size: 16.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.create-button:active { background: var(--create-active-bg); }
+
+.brand-footer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--footer-color);
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.brand-footer img {
+  display: block;
+  height: 22px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+}
+
+/* Owner Dashboard */
+.owner-screen {
+  flex: 1;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 12px 4.25% max(28px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.owner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.owner-title-group h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.owner-title-group p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--muted-text);
+}
+
+.logout-button {
+  height: 38px;
+  padding: 0 16px;
+  border: 1.5px solid var(--create-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--create-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.logout-button:active { background: var(--create-active-bg); }
+
+.storage-note {
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: var(--subtle-bg);
+  border: 1px solid var(--card-border);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stat-card {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted-text);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1 1 200px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid var(--input-border);
+  border-radius: 12px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font: inherit;
+  font-size: 14.5px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--input-focus-border); }
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tool-btn {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tool-btn.primary {
+  border-color: #0866e9;
+  background: #0866e9;
+  color: #ffffff;
+}
+.tool-btn.danger {
+  border-color: transparent;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.confirm-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.confirm-bar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.owner-toast {
+  min-height: 18px;
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: var(--notice-color);
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.record-card {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.record-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.record-contact {
+  font-size: 16px;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.record-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.badge.pending {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+.badge.billed {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.badge.mode {
+  background: var(--subtle-bg);
+  color: var(--create-text);
+}
+
+.record-address {
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px solid var(--card-border);
+}
+
+.record-time {
+  font-size: 12px;
+  color: var(--muted-text);
+}
+
+.record-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.small-btn {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.small-btn.delete {
+  border-color: transparent;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.empty-state {
+  padding: 36px 20px;
+  border-radius: 16px;
+  background: var(--card-bg);
+  border: 1px dashed var(--card-border);
+  text-align: center;
+  color: var(--muted-text);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+[hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="screen" id="mainScreen">
+    <div class="top-nav">
+      <button class="back-button" id="backButton" type="button" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5 6.5 12l9 7.5"/></svg>
+      </button>
+    </div>
+
+    <section class="auth-screen" id="authScreen" aria-label="Messagefulbook account access">
+      <div class="brand" aria-label="Messagefulbook">
+        <div class="brand-mark">
+          <img src="/static/logo.png" alt="Messagefulbook logo">
+        </div>
+      </div>
+
+      <form id="authForm" novalidate>
+        <input id="email" name="identifier" type="text" autocomplete="username"
+          placeholder="Mobile number or email address" aria-label="Mobile number or email address"
+          required maxlength="254">
+        <input id="address" name="address" type="text"
+          autocomplete="street-address" placeholder="Password" aria-label="Password"
+          required maxlength="255">
+        <p class="password-hint" id="passwordHint" hidden></p>
+        <button class="login-button" id="submitButton" type="submit">Log In</button>
+      </form>
+
+      <button class="forgot-button" id="forgotButton" type="button">Forgotten Password?</button>
+      <p class="notice" id="notice" role="status" aria-live="polite"></p>
+
+      <div class="bottom-actions">
+        <button class="create-button" id="createButton" type="button">Create new account</button>
+        <div class="brand-footer" id="brandFooter">
+        <img src="/static/footer.png" alt="Footer logo">
+        </div>
+      </div>
+    </section>
+
+    <section class="owner-screen" id="ownerScreen" aria-label="Owner billing records" hidden>
+      <div class="owner-header">
+        <div class="owner-title-group">
+          <h1>Customer Billing Records</h1>
+          <p>Saved customer contact &amp; delivery address details</p>
+        </div>
+        <button class="logout-button" id="ownerLogoutButton" type="button">Log Out</button>
+      </div>
+
+      <div class="storage-note">
+        <strong>Server database connected:</strong> Customer details submitted from any device are saved on the Python backend (SQLite) and protected by owner login.
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Saved</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Bill</div>
+          <div class="stat-value" id="statPending">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Billed</div>
+          <div class="stat-value" id="statBilled">0</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input class="search-input" id="searchInput" type="search"
+          placeholder="Search by mobile, email, or address..." aria-label="Search customer records">
+        <div class="toolbar-actions">
+          <button class="tool-btn primary" id="exportCsvButton" type="button">Export CSV</button>
+          <button class="tool-btn" id="copyAllButton" type="button">Copy All</button>
+          <button class="tool-btn danger" id="clearAllButton" type="button">Clear All</button>
+        </div>
+      </div>
+
+      <div class="confirm-bar" id="clearConfirmBar" hidden>
+        <span>Delete all saved customer billing records from the database?</span>
+        <div class="confirm-bar-actions">
+          <button class="tool-btn" id="cancelClearButton" type="button">Cancel</button>
+          <button class="tool-btn danger" id="confirmClearButton" type="button">Yes, Delete All</button>
+        </div>
+      </div>
+
+      <p class="owner-toast" id="ownerToast" role="status" aria-live="polite"></p>
+
+      <div class="records-list" id="recordsList"></div>
+    </section>
+  </main>
+
+  <script>
+const mainScreen = document.querySelector("#mainScreen");
+const authScreen = document.querySelector("#authScreen");
+const ownerScreen = document.querySelector("#ownerScreen");
+const form = document.querySelector("#authForm");
+const emailInput = document.querySelector("#email");
+const addressInput = document.querySelector("#address");
+const submitButton = document.querySelector("#submitButton");
+const createButton = document.querySelector("#createButton");
+const forgotButton = document.querySelector("#forgotButton");
+const passwordHint = document.querySelector("#passwordHint");
+const notice = document.querySelector("#notice");
+const backButton = document.querySelector("#backButton");
+
+const ownerLogoutButton = document.querySelector("#ownerLogoutButton");
+const statTotal = document.querySelector("#statTotal");
+const statPending = document.querySelector("#statPending");
+const statBilled = document.querySelector("#statBilled");
+const searchInput = document.querySelector("#searchInput");
+const exportCsvButton = document.querySelector("#exportCsvButton");
+const copyAllButton = document.querySelector("#copyAllButton");
+const clearAllButton = document.querySelector("#clearAllButton");
+const clearConfirmBar = document.querySelector("#clearConfirmBar");
+const cancelClearButton = document.querySelector("#cancelClearButton");
+const confirmClearButton = document.querySelector("#confirmClearButton");
+const ownerToast = document.querySelector("#ownerToast");
+const recordsList = document.querySelector("#recordsList");
+
+let mode = "login";
+let activeView = "auth";
+let currentRecords = [];
+
+function showNotice(message, isError = false) {
+  notice.textContent = message;
+  notice.classList.toggle("error", isError);
+}
+
+function showOwnerToast(message) {
+  ownerToast.textContent = message;
+}
+
+function setMode(nextMode) {
+  mode = nextMode;
+  const registering = mode === "register";
+  submitButton.textContent = registering ? "Create Account" : "Log In";
+  createButton.textContent = registering ? "Back to Log In" : "Create new account";
+  forgotButton.hidden = registering;
+  passwordHint.hidden = true;
+  addressInput.autocomplete = "street-address";
+  showNotice("");
+}
+
+function showView(view) {
+  activeView = view;
+  const isOwner = view === "owner";
+  mainScreen.classList.toggle("owner-mode", isOwner);
+  authScreen.hidden = isOwner;
+  ownerScreen.hidden = !isOwner;
+  clearConfirmBar.hidden = true;
+  showOwnerToast("");
+  if (isOwner) {
+    renderOwnerDashboard();
+  }
+}
+
+function formatDateTime(isoString) {
+  try {
+    const d = new Date(isoString);
+    return d.toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  } catch (err) {
+    return isoString;
+  }
+}
+
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  }
+  return Promise.resolve(fallbackCopy(text));
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand("copy");
+  } catch (err) {
+    // Ignore copy failure
+  }
+  document.body.removeChild(ta);
+}
+
+async function apiRequest(url, options = {}) {
+  const response = await fetch(url, {
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    ...options
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const err = new Error(data.error || "Request failed.");
+    err.status = response.status;
+    throw err;
+  }
+  return data;
+}
+
+async function renderOwnerDashboard() {
+  const query = searchInput.value.trim();
+  const url = query ? `/api/records?q=${encodeURIComponent(query)}` : "/api/records";
+
+  try {
+    const data = await apiRequest(url, { method: "GET" });
+    currentRecords = data.records || [];
+
+    statTotal.textContent = String(data.stats?.total ?? 0);
+    statPending.textContent = String(data.stats?.pending ?? 0);
+    statBilled.textContent = String(data.stats?.billed ?? 0);
+
+    recordsList.innerHTML = "";
+
+    if (currentRecords.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = (data.stats?.total ?? 0) === 0
+        ? "No customer details saved yet. Submit a mobile/email and address on the login page to record it here for billing."
+        : "No saved records match your search.";
+      recordsList.appendChild(empty);
+      return;
+    }
+
+    currentRecords.forEach((record) => {
+      const card = document.createElement("article");
+      card.className = "record-card";
+
+      const top = document.createElement("div");
+      top.className = "record-top";
+
+      const contactEl = document.createElement("div");
+      contactEl.className = "record-contact";
+      contactEl.textContent = record.contact;
+
+      const badges = document.createElement("div");
+      badges.className = "record-badges";
+
+      const modeBadge = document.createElement("span");
+      modeBadge.className = "badge mode";
+      modeBadge.textContent = record.action || "Log In";
+
+      const statusBadge = document.createElement("span");
+      statusBadge.className = record.billed ? "badge billed" : "badge pending";
+      statusBadge.textContent = record.billed ? "Billed" : "Pending";
+
+      badges.appendChild(modeBadge);
+      badges.appendChild(statusBadge);
+      top.appendChild(contactEl);
+      top.appendChild(badges);
+
+      const addressEl = document.createElement("div");
+      addressEl.className = "record-address";
+      addressEl.textContent = record.address;
+
+      const meta = document.createElement("div");
+      meta.className = "record-meta";
+
+      const timeEl = document.createElement("span");
+      timeEl.className = "record-time";
+      timeEl.textContent = formatDateTime(record.savedAt);
+
+      const actions = document.createElement("div");
+      actions.className = "record-actions";
+
+      const toggleBtn = document.createElement("button");
+      toggleBtn.type = "button";
+      toggleBtn.className = "small-btn";
+      toggleBtn.textContent = record.billed ? "Mark Pending" : "Mark Billed";
+      toggleBtn.addEventListener("click", async () => {
+        try {
+          await apiRequest(`/api/records/${record.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({ billed: !record.billed })
+          });
+          await renderOwnerDashboard();
+          showOwnerToast(record.billed ? "Marked as pending." : "Marked as billed.");
+        } catch (err) {
+          showOwnerToast(err.message);
+        }
+      });
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "small-btn";
+      copyBtn.textContent = "Copy";
+      copyBtn.addEventListener("click", () => {
+        const text = `Customer: ${record.contact}\nAddress: ${record.address}\nTime: ${formatDateTime(record.savedAt)}`;
+        copyText(text).then(() => showOwnerToast("Copied customer details for billing."));
+      });
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "small-btn delete";
+      deleteBtn.textContent = "Delete";
+      deleteBtn.addEventListener("click", async () => {
+        try {
+          await apiRequest(`/api/records/${record.id}`, { method: "DELETE" });
+          await renderOwnerDashboard();
+          showOwnerToast("Record deleted.");
+        } catch (err) {
+          showOwnerToast(err.message);
+        }
+      });
+
+      actions.appendChild(toggleBtn);
+      actions.appendChild(copyBtn);
+      actions.appendChild(deleteBtn);
+
+      meta.appendChild(timeEl);
+      meta.appendChild(actions);
+
+      card.appendChild(top);
+      card.appendChild(addressEl);
+      card.appendChild(meta);
+      recordsList.appendChild(card);
+    });
+  } catch (err) {
+    if (err.status === 401) {
+      showView("auth");
+      showNotice("Please log in with owner credentials.", true);
+    } else {
+      showOwnerToast(err.message || "Could not load records from server.");
+    }
+  }
+}
+
+async function logoutOwner() {
+  try {
+    await apiRequest("/api/owner/logout", { method: "POST" });
+  } catch (err) {
+    // Proceed to auth view even if request fails
+  }
+  showView("auth");
+  showNotice("Logged out of owner view.");
+}
+
+createButton.addEventListener("click", () => {
+  setMode(mode === "login" ? "register" : "login");
+});
+
+forgotButton.addEventListener("click", () => {
+  showNotice("Password recovery is not set up yet. Contact the site administrator for help.", true);
+});
+
+backButton.addEventListener("click", () => {
+  if (activeView === "owner") {
+    logoutOwner();
+    return;
+  }
+  if (mode === "register") {
+    setMode("login");
+  }
+});
+
+ownerLogoutButton.addEventListener("click", logoutOwner);
+
+searchInput.addEventListener("input", () => {
+  renderOwnerDashboard();
+});
+
+exportCsvButton.addEventListener("click", () => {
+  if (currentRecords.length === 0) {
+    showOwnerToast("No records to export.");
+    return;
+  }
+  window.location.href = "/api/records/export.csv";
+  showOwnerToast("Downloading billing records CSV...");
+});
+
+copyAllButton.addEventListener("click", () => {
+  if (currentRecords.length === 0) {
+    showOwnerToast("No records to copy.");
+    return;
+  }
+  const summary = currentRecords.map((r, i) =>
+    `${i + 1}. ${r.contact} | ${r.address} | ${r.billed ? "Billed" : "Pending"} (${formatDateTime(r.savedAt)})`
+  ).join("\n");
+  copyText(summary).then(() => showOwnerToast(`Copied ${currentRecords.length} record(s) to clipboard.`));
+});
+
+clearAllButton.addEventListener("click", () => {
+  if (currentRecords.length === 0) {
+    showOwnerToast("No records to clear.");
+    return;
+  }
+  clearConfirmBar.hidden = false;
+});
+
+cancelClearButton.addEventListener("click", () => {
+  clearConfirmBar.hidden = true;
+});
+
+confirmClearButton.addEventListener("click", async () => {
+  try {
+    await apiRequest("/api/records", { method: "DELETE" });
+    clearConfirmBar.hidden = true;
+    await renderOwnerDashboard();
+    showOwnerToast("All saved records cleared.");
+  } catch (err) {
+    showOwnerToast(err.message);
+  }
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  showNotice("");
+
+  const contact = emailInput.value.trim();
+  const address = addressInput.value.trim();
+
+  if (!contact || !address) {
+    showNotice("Please enter your mobile number or email address and address.", true);
+    return;
+  }
+
+  submitButton.disabled = true;
+  try {
+    const result = await apiRequest("/api/submit", {
+      method: "POST",
+      body: JSON.stringify({ contact, address, mode })
+    });
+
+    if (result.role === "owner") {
+      emailInput.value = "";
+      addressInput.value = "";
+      setMode("login");
+      showView("owner");
+      return;
+    }
+
+    if (mode === "register") {
+      showNotice("Account created and details saved. You can now log in.");
+      const savedContact = contact;
+      setMode("login");
+      emailInput.value = savedContact;
+      addressInput.value = "";
+    } else {
+      showNotice(`Invalid mobile , email or password`, true);
+      addressInput.value = "";
+    }
+  } catch (err) {
+    showNotice(err.message || "Could not connect to server.", true);
+  } finally {
+    submitButton.disabled = false;
+  }
+});
+
+// Restore owner view if the owner session is already active
+apiRequest("/api/owner/status", { method: "GET" })
+  .then((data) => {
+    if (data.isOwner) {
+      showView("owner");
+    }
+  })
+  .catch(() => {});
+  </script>
+</body>
+</html>
